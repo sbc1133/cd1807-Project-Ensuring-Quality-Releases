@@ -103,38 +103,38 @@ stages:
     #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
     #     environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
 
-#--------------------------------------------#    
+    #--------------------------------------------#    
     # ===== EVERYTHING BELOW THIS LINE IS TEMPORARILY DISABLED =====
     # ===== FOR THIS MINIMAL PIPELINE TEST. RE-ENABLE STAGE BY STAGE LATER. =====
 
     # Postman - Install Newman    
-    # - task: CmdLine@2
-    #   displayName: Install Newman
-    #   inputs:
-    #     script: 'sudo npm install -g newman'
-    #     workingDirectory: $(System.DefaultWorkingDirectory)
-    # # Postman Data Validation Test Suite    
-    # - task: CmdLine@2
-    #   displayName: Run Data Validation Tests
-    #   continueOnError: true
-    #   inputs:
-    #     script: 'newman run TestSuite.Data-Validation.json -e Test.environment.json --reporters cli,junit --reporter-junit-export TEST-DataValidation.xml'
-    #     workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-    # # Postman Regression Test Suite    
-    # - task: CmdLine@2
-    #   displayName: Run Regression Tests
-    #   continueOnError: true
-    #   inputs:
-    #     script: 'newman run TestSuite.Regression.json -e Test.environment.json --reporters cli,junit --reporter-junit-export TEST-Regression.xml'
-    #     workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-    # # Postman - Publish Results 
-    # - task: PublishTestResults@2
-    #   inputs:
-    #     testResultsFormat: 'JUnit'
-    #     testResultsFiles: '**/TEST-*.xml'
-    #     searchFolder:       # ToDo
-    #     mergeTestResults: true
-    #     testRunTitle:       # ToDo
+    - task: CmdLine@2
+      displayName: Install Newman
+      inputs:
+        script: 'sudo npm install -g newman'
+        workingDirectory: $(System.DefaultWorkingDirectory)
+    # Postman Data Validation Test Suite    
+    - task: CmdLine@2
+      displayName: Run Data Validation Tests
+      continueOnError: true
+      inputs:
+        script: 'newman run TestSuite.Data-Validation.json -e Test.environment.json --reporters cli,junit --reporter-junit-export TEST-DataValidation.xml'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+    # Postman Regression Test Suite    
+    - task: CmdLine@2
+      displayName: Run Regression Tests
+      continueOnError: true
+      inputs:
+        script: 'newman run TestSuite.Regression.json -e Test.environment.json --reporters cli,junit --reporter-junit-export TEST-Regression.xml'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+    # Postman - Publish Results 
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/TEST-*.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+        mergeTestResults: true
+        testRunTitle: 'Postman API Tests'
 
     #--------------------------------------------#
     # Selenium (UI) Test Suite - Archive the package  
