@@ -59,5 +59,5 @@ module "vm" {
   subnet_id                = module.network.subnet_id_test
   public_ip_address_id     = module.publicip.public_ip_address_id
   admin_username           = "adminuser"
-  ssh_public_key_path      = var.ssh_public_key_path
+  ssh_public_key           = var.ssh_public_key
 }
