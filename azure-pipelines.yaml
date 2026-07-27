@@ -80,6 +80,18 @@ stages:
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
+      env:
+        TF_VAR_subscription_id: $(TF_VAR_subscription_id)
+        TF_VAR_client_id: $(TF_VAR_client_id)
+        TF_VAR_client_secret: $(TF_VAR_client_secret)
+        TF_VAR_tenant_id: $(TF_VAR_tenant_id)
+        TF_VAR_location: $(TF_VAR_location)
+        TF_VAR_resource_group: $(TF_VAR_resource_group)
+        TF_VAR_application_type: $(TF_VAR_application_type)
+        TF_VAR_virtual_network_name: $(TF_VAR_virtual_network_name)
+        TF_VAR_address_space: $(TF_VAR_address_space)
+        TF_VAR_address_prefix_test: $(TF_VAR_address_prefix_test)
+        TF_VAR_ssh_public_key: $(TF_VAR_ssh_public_key)
 
     # ToDo: Change the workingDirectory path, as applicable to you
     # Destroy the resources in Azure by running a separate pipeline. 
