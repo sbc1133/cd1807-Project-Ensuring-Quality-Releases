@@ -1,0 +1,329 @@
+{
+  "info": {
+    "_postman_id": "bbbbcccc-2222-3333-4444-ddddeeeeffff",
+    "name": "TestSuite.Regression",
+    "description": "Regression Test Suite for FakeRestAPI - covers full CRUD lifecycle",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Books CRUD",
+      "item": [
+        {
+          "name": "GET All Books",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 - Books list retrieved', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response time < 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "pm.test('Books list is not empty', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.length).to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Books",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Books"]
+            }
+          }
+        },
+        {
+          "name": "POST Create Book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 - Book created', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Created book has correct title', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.title).to.eql('Regression Test Book');",
+                  "});",
+                  "pm.test('Response time < 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 0,\n  \"title\": \"Regression Test Book\",\n  \"description\": \"Book created during regression testing\",\n  \"pageCount\": 250,\n  \"excerpt\": \"Sample excerpt for regression test\",\n  \"publishDate\": \"2023-06-01T00:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Books",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Books"]
+            }
+          }
+        },
+        {
+          "name": "PUT Update Book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 - Book updated', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Book title updated correctly', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.title).to.eql('Updated Regression Book');",
+                  "});",
+                  "pm.test('Response time < 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"title\": \"Updated Regression Book\",\n  \"description\": \"Updated description for regression testing\",\n  \"pageCount\": 300,\n  \"excerpt\": \"Updated excerpt\",\n  \"publishDate\": \"2023-07-01T00:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Books/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Books", "1"]
+            }
+          }
+        },
+        {
+          "name": "DELETE Book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 - Book deleted', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response time < 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Books/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Books", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authors CRUD",
+      "item": [
+        {
+          "name": "GET All Authors",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 - Authors list retrieved', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Authors list is not empty', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.length).to.be.above(0);",
+                  "});",
+                  "pm.test('Response time < 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Authors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Authors"]
+            }
+          }
+        },
+        {
+          "name": "POST Create Author",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 - Author created', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Author firstName matches', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.firstName).to.eql('John');",
+                  "});",
+                  "pm.test('Response time < 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 0,\n  \"idBook\": 1,\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Authors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Authors"]
+            }
+          }
+        },
+        {
+          "name": "PUT Update Author",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 - Author updated', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Author lastName updated correctly', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.lastName).to.eql('Smith');",
+                  "});",
+                  "pm.test('Response time < 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"idBook\": 1,\n  \"firstName\": \"John\",\n  \"lastName\": \"Smith\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Authors/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Authors", "1"]
+            }
+          }
+        },
+        {
+          "name": "DELETE Author",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 - Author deleted', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response time < 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Authors/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Authors", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Activities",
+      "item": [
+        {
+          "name": "GET All Activities",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 - Activities retrieved', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response is an array', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});",
+                  "pm.test('Response time < 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Activities",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Activities"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

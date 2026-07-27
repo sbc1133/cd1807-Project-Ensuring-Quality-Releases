@@ -1,0 +1,189 @@
+{
+  "info": {
+    "_postman_id": "aaaabbbb-1111-2222-3333-ccccddddeeee",
+    "name": "TestSuite.Data-Validation",
+    "description": "Data Validation Test Suite for FakeRestAPI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "Get All Books",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response is an array', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});",
+                  "pm.test('Each book has id, title, and description', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    jsonData.forEach(function(book) {",
+                  "        pm.expect(book).to.have.property('id');",
+                  "        pm.expect(book).to.have.property('title');",
+                  "        pm.expect(book).to.have.property('description');",
+                  "    });",
+                  "});",
+                  "pm.test('id is a number', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    jsonData.forEach(function(book) {",
+                  "        pm.expect(book.id).to.be.a('number');",
+                  "    });",
+                  "});",
+                  "pm.test('title is a string', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    jsonData.forEach(function(book) {",
+                  "        pm.expect(book.title).to.be.a('string');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Books",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Books"]
+            }
+          }
+        },
+        {
+          "name": "Get Book by Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Book id matches requested id', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.id).to.eql(1);",
+                  "});",
+                  "pm.test('Book has pageCount field', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('pageCount');",
+                  "});",
+                  "pm.test('pageCount is a number', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.pageCount).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Books/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Books", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response has id', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "});",
+                  "pm.test('Title matches sent title', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.title).to.eql('Test Book Data Validation');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 0,\n  \"title\": \"Test Book Data Validation\",\n  \"description\": \"A book created for data validation testing\",\n  \"pageCount\": 100,\n  \"excerpt\": \"Test excerpt\",\n  \"publishDate\": \"2023-01-01T00:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Books",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Books"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authors",
+      "item": [
+        {
+          "name": "Get All Authors",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response is an array', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});",
+                  "pm.test('Each author has id, idBook, firstName, lastName', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    jsonData.forEach(function(author) {",
+                  "        pm.expect(author).to.have.property('id');",
+                  "        pm.expect(author).to.have.property('idBook');",
+                  "        pm.expect(author).to.have.property('firstName');",
+                  "        pm.expect(author).to.have.property('lastName');",
+                  "    });",
+                  "});",
+                  "pm.test('firstName is a string', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    jsonData.forEach(function(author) {",
+                  "        pm.expect(author.firstName).to.be.a('string');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Authors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "Authors"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
