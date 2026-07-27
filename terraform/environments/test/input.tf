@@ -12,7 +12,9 @@ variable "application_type" {}
 # Network
 variable virtual_network_name {}
 variable address_prefix_test {}
-variable address_space {}
+variable "address_space" {
+  type = list(string)
+}
 
 # SSH Public Key
 variable "ssh_public_key" {}
