@@ -23,3 +23,5 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+# Contains real secrets - do not commit
+terraform/environments/test/terraform.tfvars
