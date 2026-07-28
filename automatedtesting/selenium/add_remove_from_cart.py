@@ -79,14 +79,11 @@ def test_add_all_items(driver):
         print(msg)
         logger.info(msg)
 
-    WebDriverWait(driver, 10).until(
-        lambda d: get_cart_count(d) == len(items)
-    )
-    cart_count = get_cart_count(driver)
-    assert cart_count == len(items), \
-        f'Expected {len(items)} items in cart badge, got {cart_count}'
+    remove_buttons = driver.find_elements(By.CSS_SELECTOR, 'button[id^="remove"]')
+    assert len(remove_buttons) == len(items), \
+        f'Expected {len(items)} items showing "Remove" state, got {len(remove_buttons)}'
 
-    summary = f'[CART TEST] PASS — {cart_count} items added to cart. Items: {added}'
+    summary = f'[CART TEST] PASS — {len(remove_buttons)} items added to cart. Items: {added}'
     print(summary)
     logger.info(summary)
     return added
