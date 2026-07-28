@@ -234,8 +234,11 @@ stages:
                 #!/bin/bash
                 set -e
                 sudo apt-get update -y
-                sudo apt-get install -y python3-pip unzip wget
-                sudo apt-get install -y chromium-browser || sudo snap install chromium || true
+                sudo apt-get install -y python3-pip unzip wget \
+                  fonts-liberation libnss3 libnspr4 libatk-bridge2.0-0 libatk1.0-0 \
+                  libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 \
+                  libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libasound2t64 \
+                  libatspi2.0-0 libx11-xcb1
                 pip3 install --break-system-packages selenium || pip3 install selenium
 
                 mkdir -p /home/azureuser/app
@@ -243,16 +246,6 @@ stages:
                 cp $(Pipeline.Workspace)/drop-uitests/$(Build.BuildId)-uitests.zip .
                 unzip -o $(Build.BuildId)-uitests.zip
 
-                FILE=/home/azureuser/app/chromedriver
-                if [ ! -f "$FILE" ]; then
-                    LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE || echo "")
-                    if [ -n "$LATEST" ]; then
-                      wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
-                      unzip -o chromedriver_linux64.zip
-                      sudo ln -sf $PWD/chromedriver /usr/local/bin/chromedriver
-                    fi
-                fi
-                export PATH=$PATH:/home/azureuser/app
                 echo "Starting Selenium Tests"
                 python3 add_remove_from_cart.py
                 echo "Completed Selenium Tests. Check selenium.log for results."
