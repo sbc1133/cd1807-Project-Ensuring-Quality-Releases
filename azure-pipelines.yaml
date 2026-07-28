@@ -205,10 +205,10 @@ stages:
             displayName: 'Run JMeter Performance Tests'
             inputs:
               script: |
-                wget "https://apache.mirrors.lucidnetworks.net//jmeter/binaries/apache-jmeter-5.2.1.tgz"
-                tar -xf apache-jmeter-5.2.1.tgz
+                wget "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.5.tgz"
+                tar -xf apache-jmeter-5.5.tgz
                 unzip -o $(Build.BuildId)-perftests.zip
-                ./apache-jmeter-5.2.1/bin/jmeter -n -t PerformanceTestSuite.jmx -j jmeter.log -f
+                ./apache-jmeter-5.5/bin/jmeter -n -t PerformanceTestSuite.jmx -j jmeter.log -f
                 cat jmeter.log
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
               
