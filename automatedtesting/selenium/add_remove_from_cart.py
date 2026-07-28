@@ -17,8 +17,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 import logging
 import datetime
+import glob
+import os
+import time
 
 # -------------------------------------------------------------------
 # Logging — UTF-8 required for Azure Log Analytics ingestion
@@ -35,12 +39,30 @@ logger = logging.getLogger(__name__)
 
 def get_driver():
     options = Options()
-    options.add_argument('--headless')
+    options.add_argument('--headless=new')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-gpu')
     options.add_argument('--window-size=1920,1080')
-    driver = webdriver.Chrome(options=options)
+
+    # Explicitly locate the Chrome binary and the matching-version chromedriver
+    # that Selenium Manager previously downloaded, bypassing its auto-detection
+    # logic (which was unreliable when invoked through the Python client).
+    chrome_matches = glob.glob('/home/azureuser/.cache/selenium/chrome/linux64/*/chrome')
+    if chrome_matches:
+        chrome_path = chrome_matches[0]
+        options.binary_location = chrome_path
+        chrome_version = os.path.basename(os.path.dirname(chrome_path))
+        driver_path = f'/home/azureuser/.cache/selenium/chromedriver/linux64/{chrome_version}/chromedriver'
+        if os.path.isfile(driver_path):
+            from selenium.webdriver.chrome.service import Service
+            service = Service(executable_path=driver_path)
+            driver = webdriver.Chrome(service=service, options=options)
+        else:
+            driver = webdriver.Chrome(options=options)
+    else:
+        driver = webdriver.Chrome(options=options)
+
     driver.implicitly_wait(10)
     return driver
 
@@ -73,13 +95,21 @@ def test_add_all_items(driver):
     for item in items:
         name = item.find_element(By.CLASS_NAME, 'inventory_item_name').text
         btn  = item.find_element(By.CSS_SELECTOR, 'button[id^="add-to-cart"]')
-        btn.click()
+        driver.execute_script("arguments[0].click();", btn)
+        time.sleep(0.5)
         added.append(name)
         msg = f'[CART TEST] Added to cart: "{name}"'
         print(msg)
         logger.info(msg)
 
+    # Give the app a moment to settle after the clicks before checking state.
+    time.sleep(3)
+
     remove_buttons = driver.find_elements(By.CSS_SELECTOR, 'button[id^="remove"]')
+    add_buttons_left = driver.find_elements(By.CSS_SELECTOR, 'button[id^="add-to-cart"]')
+    print(f'[DEBUG] Total buttons on page: {len(driver.find_elements(By.TAG_NAME, "button"))}')
+    print(f'[DEBUG] Buttons still showing "add-to-cart": {len(add_buttons_left)}')
+    print(f'[DEBUG] Buttons showing "remove": {len(remove_buttons)}')
     assert len(remove_buttons) == len(items), \
         f'Expected {len(items)} items showing "Remove" state, got {len(remove_buttons)}'
 
@@ -95,7 +125,8 @@ def test_remove_all_items(driver, added_items):
     logger.info('[CART TEST] --- Removing all items from cart ---')
 
     # Navigate to cart page
-    driver.find_element(By.CLASS_NAME, 'shopping_cart_link').click()
+    cart_link = driver.find_element(By.CLASS_NAME, 'shopping_cart_link')
+    driver.execute_script("arguments[0].click();", cart_link)
     WebDriverWait(driver, 10).until(EC.url_contains('cart'))
 
     removed = []
@@ -107,7 +138,8 @@ def test_remove_all_items(driver, added_items):
         # Get the item name before clicking remove
         cart_items = driver.find_elements(By.CLASS_NAME, 'cart_item')
         item_name = cart_items[0].find_element(By.CLASS_NAME, 'inventory_item_name').text
-        remove_buttons[0].click()
+        driver.execute_script("arguments[0].click();", remove_buttons[0])
+        time.sleep(1)
         removed.append(item_name)
         msg = f'[CART TEST] Removed from cart: "{item_name}"'
         print(msg)
