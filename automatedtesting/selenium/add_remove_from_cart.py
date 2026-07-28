@@ -72,13 +72,16 @@ def test_add_all_items(driver):
     added = []
     for item in items:
         name = item.find_element(By.CLASS_NAME, 'inventory_item_name').text
-        btn  = item.find_element(By.CSS_SELECTOR, 'button[class*="add-to-cart"]')
+        btn  = item.find_element(By.CSS_SELECTOR, 'button[id^="add-to-cart"]')
         btn.click()
         added.append(name)
         msg = f'[CART TEST] Added to cart: "{name}"'
         print(msg)
         logger.info(msg)
 
+    WebDriverWait(driver, 10).until(
+        lambda d: get_cart_count(d) == len(items)
+    )
     cart_count = get_cart_count(driver)
     assert cart_count == len(items), \
         f'Expected {len(items)} items in cart badge, got {cart_count}'
@@ -101,7 +104,7 @@ def test_remove_all_items(driver, added_items):
     removed = []
     # Loop until no remove buttons remain
     while True:
-        remove_buttons = driver.find_elements(By.CSS_SELECTOR, 'button[class*="remove"]')
+        remove_buttons = driver.find_elements(By.CSS_SELECTOR, 'button[id^="remove"]')
         if not remove_buttons:
             break
         # Get the item name before clicking remove
