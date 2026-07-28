@@ -199,7 +199,7 @@ stages:
               appName: 'shivali-udacity-app-AppService'
               appType: webApp
               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
-          #--------------------------------------------#    
+          #--------------------------------------------#      
           # Run JMeter test suite against the App Service
           - task: CmdLine@2
             displayName: 'Run JMeter Performance Tests'
@@ -208,9 +208,32 @@ stages:
                 wget "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.5.tgz"
                 tar -xf apache-jmeter-5.5.tgz
                 unzip -o $(Build.BuildId)-perftests.zip
-                ./apache-jmeter-5.5/bin/jmeter -n -t PerformanceTestSuite.jmx -j jmeter.log -f
+                rm -rf report-perftest
+                ./apache-jmeter-5.5/bin/jmeter -n -t PerformanceTestSuite.jmx -j jmeter.log -l results-perftest.jtl -e -o report-perftest -f
                 cat jmeter.log
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
+
+          - task: CmdLine@2
+            displayName: 'Run JMeter Endurance Tests'
+            inputs:
+              script: |
+                rm -rf report-endurance
+                ./apache-jmeter-5.5/bin/jmeter -n -t EnduranceTestSuite.jmx -j jmeter-endurance.log -l results-endurance.jtl -e -o report-endurance -f
+                cat jmeter-endurance.log
+              workingDirectory: $(Pipeline.Workspace)/drop-perftests
+
+          - task: ArchiveFiles@2
+            displayName: 'Archive JMeter HTML Reports'
+            inputs:
+              rootFolderOrFile: '$(Pipeline.Workspace)/drop-perftests'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-reports.zip'
+              replaceExistingArchive: true
+
+          - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-reports.zip
+            displayName: 'Upload JMeter HTML Reports'
+            artifact: drop-jmeter-reports
               
   #--------------------------------------------#  
   # Selenium | Functional UI Tests
