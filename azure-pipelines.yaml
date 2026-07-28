@@ -104,9 +104,6 @@ stages:
     #     environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
 
     #--------------------------------------------#    
-    # ===== EVERYTHING BELOW THIS LINE IS TEMPORARILY DISABLED =====
-    # ===== FOR THIS MINIMAL PIPELINE TEST. RE-ENABLE STAGE BY STAGE LATER. =====
-
     # Postman - Install Newman    
     - task: CmdLine@2
       displayName: Install Newman
@@ -138,120 +135,125 @@ stages:
 
     #--------------------------------------------#
     # Selenium (UI) Test Suite - Archive the package  
-    # - task: ArchiveFiles@2
-    #   displayName: 'Archive UI Tests'
-    #   inputs:
-    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
-    #     includeRootFolder: false
-    #     archiveType: 'zip'
-    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip'
-    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip
-    #   displayName: 'Upload Package'
-    #   artifact: drop-uitests
+    - task: ArchiveFiles@2
+      displayName: 'Archive UI Tests'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip'
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip
+      displayName: 'Upload Package'
+      artifact: drop-uitests
 
     #--------------------------------------------#    
     # FakeRestAPI - Archive
-    # - task: ArchiveFiles@2
-    #   displayName: 'Archive FakeRestAPI'
-    #   inputs:
-    #     rootFolderOrFile: 
-    #     includeRootFolder: false
-    #     archiveType: 'zip'
-    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-    #   displayName: 'Upload Package'
-    #   artifact: drop-fakerestapi
+    - task: ArchiveFiles@2
+      displayName: 'Archive FakeRestAPI'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
+      displayName: 'Upload Package'
+      artifact: drop-fakerestapi
 
     #--------------------------------------------#  
     # JMeter (Performance) Test Suite - Archive
-    # - task: ArchiveFiles@2
-    #   displayName: 'Archive PerformanceTestSuite'
-    #   inputs:
-    #     rootFolderOrFile: 
-    #     includeRootFolder: false
-    #     archiveType: 'zip'
-    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip'
-    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip
-    #   displayName: 'Upload Package'
-    #   artifact: drop-perftests
+    - task: ArchiveFiles@2
+      displayName: 'Archive PerformanceTestSuite'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/test-suite'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip'
+    # JMeter Test Suite - Publish    
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip
+      displayName: 'Upload Package'
+      artifact: drop-perftests
 
 #--------------------------------------------#  
-# DEPLOYMENT STAGE - DISABLED FOR NOW
+# DEPLOYMENT STAGE
 #--------------------------------------------#    
-# - stage: Deploy
-#   jobs:
-#   #--------------------------------------------#  
-#   # Deploy FakeRestAPI Web App
-#   - deployment: FakeRestAPI
-#     pool:
-#       vmImage: 'Ubuntu-18.04'      
-#     environment: <environment name>   # ToDo
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - task: AzureWebApp@1
-#             displayName: 'Deploy Azure Web App'
-#             inputs:
-#               azureSubscription: ''     # ToDo
-#               appName: ''               # ToDo
-#               appType: webApp
-#               package: $(Pipeline.Workspace)/<artifact>/<archiveFile>       # ToDo: Use the published zip artifact. 
-#           #--------------------------------------------#    
-#           # Run JMeter test suite against the App Service
-#           - task: CmdLine@2
-#             inputs:
-#               script: |
-#                 wget "https://apache.mirrors.lucidnetworks.net//jmeter/binaries/apache-jmeter-5.2.1.tgz"
-#                 tar -xf apache-jmeter-5.2.1.tgz
-#                 unzip -o $(Build.BuildId)-perftests.zip
-#                 ./apache-jmeter-5.2.1/bin/jmeter -n -t PerformanceTestSuite.jmx -j jmeter.log -f
-#                 cat jmeter.log                                                                           # ToDo: Write your commands
-#               workingDirectory: $(Pipeline.Workspace)/<artifact>            # ToDo: Use the artifact name from the task above
-#               
-#   #--------------------------------------------#  
-#   # Selenium | Functional UI Tests
-#   - deployment: VMDeploy
-#     displayName: Selenium Tests
-#     environment:
-#       name:         # ToDo: Change/provide a name
-#       resourceType: VirtualMachine
-#       tags: selenium
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - download: current
-#             artifact: drop-ui-tests     # ToDo: Change/provide a name
-#             
-#           - task: Bash@3
-#             inputs:
-#               targetType: 'inline'
-#               script: |           
-#                 #! /bin/bash
-#                 
-#                 sudo apt-get upgrade -y
-#                 sudo apt-get install python3-pip -y
-#                 sudo apt-get install unzip -y
-#                 sudo apt-get install -y chromium-browser
-#                 pip3 install selenium
-#                 cd ~/
-#                 DIR=/home/testuser/app
-#                 if [ ! -d "$DIR" ]; then
-#                     mkdir app
-#                 fi
-#                 mv /home/testuser/azagent/_work/1/drop-uitests/$(Build.BuildId)-uitests.zip app
-#                 cd app
-#                 unzip -o $(Build.BuildId)-uitests.zip
-#                 FILE=/home/testuser/app/chromedriver_linux64.zip
-#                 if [ ! -f "$FILE" ]; then
-#                     LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-#                     wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
-#                     unzip -o chromedriver_linux64.zip
-#                     sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
-#                 fi
-#                 export PATH=$PATH:/home/testuser/app
-#                 echo "Starting Selenium Tests"
-#                 python3 login.py >> selenium.log
-#
-#                 echo "Completed Selenium Tests. Check selenium.log for results."
+- stage: Deploy
+  jobs:
+  #--------------------------------------------#  
+  # Deploy FakeRestAPI Web App
+  - deployment: FakeRestAPI
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'test'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop-fakerestapi
+          - download: current
+            artifact: drop-perftests
+          - task: AzureWebApp@1
+            displayName: 'Deploy Azure Web App'
+            inputs:
+              azureSubscription: 'myServiceConnection'
+              appName: 'shivali-udacity-app-AppService'
+              appType: webApp
+              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
+          #--------------------------------------------#    
+          # Run JMeter test suite against the App Service
+          - task: CmdLine@2
+            displayName: 'Run JMeter Performance Tests'
+            inputs:
+              script: |
+                wget "https://apache.mirrors.lucidnetworks.net//jmeter/binaries/apache-jmeter-5.2.1.tgz"
+                tar -xf apache-jmeter-5.2.1.tgz
+                unzip -o $(Build.BuildId)-perftests.zip
+                ./apache-jmeter-5.2.1/bin/jmeter -n -t PerformanceTestSuite.jmx -j jmeter.log -f
+                cat jmeter.log
+              workingDirectory: $(Pipeline.Workspace)/drop-perftests
+              
+  #--------------------------------------------#  
+  # Selenium | Functional UI Tests
+  - deployment: VMDeploy
+    displayName: Selenium Tests
+    environment:
+      name: selenium-test-vm
+      resourceType: VirtualMachine
+      tags: selenium
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop-uitests
+
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                #!/bin/bash
+                set -e
+                sudo apt-get update -y
+                sudo apt-get install -y python3-pip unzip wget
+                sudo apt-get install -y chromium-browser || sudo snap install chromium || true
+                pip3 install --break-system-packages selenium || pip3 install selenium
+
+                mkdir -p /home/azureuser/app
+                cd /home/azureuser/app
+                cp $(Pipeline.Workspace)/drop-uitests/$(Build.BuildId)-uitests.zip .
+                unzip -o $(Build.BuildId)-uitests.zip
+
+                FILE=/home/azureuser/app/chromedriver
+                if [ ! -f "$FILE" ]; then
+                    LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE || echo "")
+                    if [ -n "$LATEST" ]; then
+                      wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
+                      unzip -o chromedriver_linux64.zip
+                      sudo ln -sf $PWD/chromedriver /usr/local/bin/chromedriver
+                    fi
+                fi
+                export PATH=$PATH:/home/azureuser/app
+                echo "Starting Selenium Tests"
+                python3 add_remove_from_cart.py
+                echo "Completed Selenium Tests. Check selenium.log for results."
+                cat selenium.log
