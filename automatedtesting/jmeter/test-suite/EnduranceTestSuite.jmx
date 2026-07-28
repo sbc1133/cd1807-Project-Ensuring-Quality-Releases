@@ -45,7 +45,7 @@ Dev/CI: 1 user, 30 loops. Final submission: up to 30 users, 60s max.</stringProp
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">APPSERVICEURL</stringProp>
+          <stringProp name="HTTPSampler.domain">shivali-udacity-app-appservice.azurewebsites.net</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.path">/api/v1/Books</stringProp>
@@ -70,7 +70,7 @@ Dev/CI: 1 user, 30 loops. Final submission: up to 30 users, 60s max.</stringProp
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">APPSERVICEURL</stringProp>
+          <stringProp name="HTTPSampler.domain">shivali-udacity-app-appservice.azurewebsites.net</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.path">/api/v1/Books/${bookId}</stringProp>
@@ -95,7 +95,7 @@ Dev/CI: 1 user, 30 loops. Final submission: up to 30 users, 60s max.</stringProp
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">APPSERVICEURL</stringProp>
+          <stringProp name="HTTPSampler.domain">shivali-udacity-app-appservice.azurewebsites.net</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.path">/api/v1/Authors</stringProp>
