@@ -242,6 +242,8 @@ stages:
                 pip3 install --break-system-packages selenium || pip3 install selenium
 
                 mkdir -p /home/azureuser/app
+                rm -f /home/azureuser/app/chromedriver
+                sudo rm -f /usr/local/bin/chromedriver
                 cd /home/azureuser/app
                 cp $(Pipeline.Workspace)/drop-uitests/$(Build.BuildId)-uitests.zip .
                 unzip -o $(Build.BuildId)-uitests.zip
