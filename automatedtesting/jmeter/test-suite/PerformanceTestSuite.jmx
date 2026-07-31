@@ -49,7 +49,7 @@ Dev/CI: 2 users max. Final submission: up to 30 users, 60s max duration.</string
           <stringProp name="HTTPSampler.domain">shivali-udacity-app-appservice.azurewebsites.net</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/Books</stringProp>
+          <stringProp name="HTTPSampler.path">/api/Books</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -75,7 +75,7 @@ Dev/CI: 2 users max. Final submission: up to 30 users, 60s max duration.</string
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <!-- bookId comes from test-data.csv -->
-          <stringProp name="HTTPSampler.path">/api/v1/Books/${bookId}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/Books/${bookId}</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -100,7 +100,7 @@ Dev/CI: 2 users max. Final submission: up to 30 users, 60s max duration.</string
           <stringProp name="HTTPSampler.domain">shivali-udacity-app-appservice.azurewebsites.net</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/Authors</stringProp>
+          <stringProp name="HTTPSampler.path">/api/Authors</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
